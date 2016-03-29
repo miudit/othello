@@ -27,19 +27,17 @@ class OpeningBook:
     self.__rote = False
 
   # <概要> file入力からBookを構築する
-  def __initBook(self): # TODO
-    #input_file = open("./extra-large-20080301.txt")
-    input_file = open("./book_test.txt")
+  def __initBook(self):
+    file_name = "./book_test.txt"
+    #file_name = "./extra-large-20080301.txt"
+    total_line = sum(1 for line in open(file_name))
+    input_file = open(file_name)
     root = OpeningBook.Node()
-    for row in input_file:
+    for i, row in enumerate(input_file):
       nodes = self.__row2nodes(row)
       self.__addNodes(root, nodes) 
-    #node = self.__addChild(root, self.__pos2key(2, 3))  # (2,3)に黒
-    #self.__addChild(node, self.__pos2key(2, 2))         # (2,2)に白
-    
-    currentNode = root
-    #print currentNode.child.keys()
-    
+      print round(float(i)/total_line, 3) * 100,"% completed"
+    print "OpeningBook Completed"
     return root
 
   def __pos2key(self, x, y):
@@ -64,14 +62,14 @@ class OpeningBook:
     return self.__pos2correctedPos(x,y)
 
   # <概要> "C4"等の位置 --> key
-  def __charpos2key(self, charpos): #TODO (implemented, not tested)
+  def __charpos2key(self, charpos):
     alphabets = ['A','B','C','D','E','F','G','H']
     x = alphabets.index(charpos[0])
     y = int(charpos[1])-1
     return self.__pos2key(x, y)
 
   # <概要> stringのrow --> (key, score)のリスト
-  def __row2nodes(self, row): #TODO (implemented, not tested)
+  def __row2nodes(self, row):
     sep = row.split(" ; ")
     nodes = [(self.__charpos2key(sep[0][i: i+2]), 0) for i in range(0, len(sep[0]), 2)]
     nodes[-1] = (nodes[-1][0], float(sep[1]))
@@ -83,7 +81,7 @@ class OpeningBook:
     parentNode.child[key] = OpeningBook.Node(score)
     return parentNode.child[key]
 
-  def __addNodes(self, parentNode, nodes): #TODO (implemented, not tested)
+  def __addNodes(self, parentNode, nodes):
     currentNode = parentNode
     for node in nodes:
       keys = currentNode.child.keys()
@@ -116,10 +114,8 @@ class OpeningBook:
 
   # <概要> bookを読んでコマを置くべき位置を得る
   def readBook(self):
-  
     key = max(self.__currentNode.child.items(), key=lambda x:x[1].score)[0] # score最大ノードのキーを返す
     #key = self.__currentNode.child.keys()[0] # 候補の一番目を返す
-    
     self.__currentNode = self.__currentNode.child[key]
     print "On Book"
     return self.__key2correctedPos(key)
