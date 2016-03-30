@@ -9,7 +9,7 @@
 # (http://tosapy.merrymall.net/othello/wzebra/extra-large-txt-20080301.zip)
 
 import othello
-
+import pickle
 
 # <メンバ> __currentNode:木構造上の現盤面のNode
 #          __valid:ゲームが定石通りに進行中か否か
@@ -30,8 +30,8 @@ class OpeningBook(object):
 
   # <概要> file入力からBookを構築する
   def __initBook(self):
-    file_name = "./book_test.txt"
-    #file_name = "./extra-large-20080301.txt"
+    #file_name = "./book_test.txt"
+    file_name = "./extra-large-20080301.txt"
     total_line = sum(1 for line in open(file_name))
     input_file = open(file_name)
     root = OpeningBook.Node()
@@ -40,6 +40,12 @@ class OpeningBook(object):
       self.__addNodes(root, nodes) 
       print round(float(i)/total_line, 3) * 100,"% completed"
     print "OpeningBook Completed"
+    
+    dump_file_name = "./book_dumped.txt"
+    dump_file = open(dump_file_name, 'w')
+    pickle.dump(root, dump_file)
+    dump_file.close()
+    
     return root
 
   def __pos2key(self, x, y):
